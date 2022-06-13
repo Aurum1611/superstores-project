@@ -3,7 +3,8 @@ from .models import Customer, StoreItems, OrderItem
 from .serializers import (
     CustomerSerializer,
     StoreItemsSerializer,
-    OrderItemSerializer
+    OrderItemSerializer,
+    NestedCustomerSerializer
 )
 from rest_framework.response import Response
 
@@ -86,3 +87,7 @@ class OrderItemViewSet(viewsets.ModelViewSet):
         else:
             return Response('Invalid customer or item id',
                             status=status.HTTP_403_FORBIDDEN)
+
+
+class NestedCustomerViewSet(CustomerViewSet):
+    serializer_class = NestedCustomerSerializer

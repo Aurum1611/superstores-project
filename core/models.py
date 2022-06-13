@@ -10,6 +10,10 @@ class Customer(models.Model):
     
     def __str__(self) -> str:
         return self.name
+    
+    @property
+    def order_item_set(self):
+        return OrderItem.objects.filter(customer=self.id)
 
 
 class StoreItems(models.Model):

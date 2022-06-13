@@ -6,7 +6,7 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = ('id', 'name', 'age', 'created_on',
-                  'phonenumber', 'is_active')
+                  'phonenumber', 'is_active')    
 
 
 class StoreItemsSerializer(serializers.ModelSerializer):
@@ -42,3 +42,13 @@ class OrderItemSerializer(serializers.ModelSerializer):
         
         instance.save()
         return instance
+
+
+class NestedCustomerSerializer(CustomerSerializer):
+    order_item_set = OrderItemSerializer(many=True)
+    
+    
+    class Meta:
+        model = Customer
+        fields = ('id', 'name', 'age', 'created_on',
+                  'phonenumber', 'is_active', 'order_item_set')

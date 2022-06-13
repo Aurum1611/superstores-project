@@ -4,13 +4,15 @@ from rest_framework import routers
 from core.views import (
     CustomerViewSet,
     StoreItemsViewSet,
-    OrderItemViewSet
+    OrderItemViewSet,
+    NestedCustomerViewSet
 )
 
 router = routers.DefaultRouter()
 router.register(r'customers', CustomerViewSet)
 router.register(r'storeitems', StoreItemsViewSet)
 router.register(r'orderitems', OrderItemViewSet)
+router.register(r'customerdetails', NestedCustomerViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
