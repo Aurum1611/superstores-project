@@ -7,6 +7,9 @@ class Customer(models.Model):
     created_on = models.DateField(auto_now_add=True)
     phonenumber = models.CharField(max_length=12)
     is_active = models.BooleanField(default=True)
+    
+    def __str__(self) -> str:
+        return self.name
 
 
 class StoreItems(models.Model):
@@ -33,6 +36,9 @@ class StoreItems(models.Model):
         max_length=2,
         choices=in_stock_choices
     )
+    
+    def __str__(self) -> str:
+        return self.item_name
 
 
 class OrderItem(models.Model):
