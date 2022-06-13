@@ -7,11 +7,15 @@ from .serializers import (
     NestedCustomerSerializer
 )
 from rest_framework.response import Response
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['name', 'phonenumber']
 
 
 class StoreItemsViewSet(viewsets.ModelViewSet):
@@ -57,6 +61,8 @@ class StoreItemsViewSet(viewsets.ModelViewSet):
 class OrderItemViewSet(viewsets.ModelViewSet):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields  = ['status']
     
     def create(self, request, *args, **kwargs):
         data = request.data
