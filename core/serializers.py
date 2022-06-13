@@ -21,3 +21,24 @@ class OrderItemSerializer(serializers.ModelSerializer):
         model = OrderItem
         fields = ('id', 'customer', 'items', 'status',
                   'created_on')
+        
+    def update(self, instance, valid_data):
+        instance.customer = valid_data.get(
+            'customer',
+            instance.customer
+        )
+        
+        if valid_data.get('items'):
+            instance.items.set(valid_data['items'])
+        
+        instance.status = valid_data.get(
+            'status',
+            instance.status
+        )
+        instance.created_on = valid_data.get(
+            'created_on',
+            instance.created_on
+        )
+        
+        instance.save()
+        return instance
