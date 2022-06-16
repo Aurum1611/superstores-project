@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import status
 from .models import Customer, StoreItems, OrderItem
 from .serializers import (
     CustomerSerializer,
@@ -113,6 +113,14 @@ class OrderItemAPI(APIView):
                             status=status.HTTP_403_FORBIDDEN)
 
 
-class NestedCustomerViewSet(viewsets.ModelViewSet):
-    queryset = Customer.objects.all()
-    serializer_class = NestedCustomerSerializer
+class NestedCustomerAPI(APIView):
+    
+    def get(self, request, pk=None, format=None):
+        if pk:
+            customer = Customer.objects.get(id=pk)
+            serializer = NestedCustomerSerializer(customer)
+            return Response(serializer.data)
+        else:
+            customers = Customer.objects.all()
+            serializer = NestedCustomerSerializer(customers, many=True)
+            return Response(serializer.data)
