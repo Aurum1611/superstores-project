@@ -1,20 +1,19 @@
 from django.contrib import admin
-from django.urls import path, include
-from rest_framework import routers
+from django.urls import path
 from core.views import (
-    CustomerViewSet,
-    StoreItemsViewSet,
-    OrderItemViewSet,
+    CustomerAPI,
+    StoreItemsAPI,
+    OrderItemAPI,
     NestedCustomerViewSet
 )
 
-router = routers.DefaultRouter()
-router.register(r'customers', CustomerViewSet)
-router.register(r'storeitems', StoreItemsViewSet)
-router.register(r'orderitems', OrderItemViewSet)
-router.register(r'customerdetails', NestedCustomerViewSet)
-
 urlpatterns = [
-    path('api/', include(router.urls)),
+    path('customers/<int:pk>/', CustomerAPI.as_view()),
+    path('customers/', CustomerAPI.as_view()),
+    path('storeitems/<int:pk>/', StoreItemsAPI.as_view()),
+    path('storeitems/', StoreItemsAPI.as_view()),
+    path('orderitems/<int:pk>/', OrderItemAPI.as_view()),
+    path('orderitems/', OrderItemAPI.as_view()),
+    path('nestedcustomer/', NestedCustomerViewSet.as_view({'get': 'list'})),
     path('admin/', admin.site.urls),
 ]

@@ -7,22 +7,35 @@ from .serializers import (
     NestedCustomerSerializer
 )
 from rest_framework.response import Response
-from rest_framework.filters import SearchFilter
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.views import APIView
 
 
-class CustomerViewSet(viewsets.ModelViewSet):
-    queryset = Customer.objects.all()
-    serializer_class = CustomerSerializer
-    filter_backends = [SearchFilter]
-    search_fields = ['name', 'phonenumber']
-
-
-class StoreItemsViewSet(viewsets.ModelViewSet):
-    queryset = StoreItems.objects.all()
-    serializer_class = StoreItemsSerializer
+class CustomerAPI(APIView):
     
-    def create(self, request, *args, **kwargs):
+    def get(self, request, pk=None, format=None):
+        if pk:
+            customer = Customer.objects.get(id=pk)
+            serializer = CustomerSerializer(customer)
+            return Response(serializer.data)
+        else:
+            customers = Customer.objects.all()
+            serializer = CustomerSerializer(customers, many=True)
+            return Response(serializer.data)
+
+
+class StoreItemsAPI(APIView):
+    
+    def get(self, request, pk=None, format=None):
+        if pk:
+            store_item = StoreItems.objects.get(id=pk)
+            serializer = StoreItemsSerializer(store_item)
+            return Response(serializer.data)
+        else:
+            store_items = StoreItems.objects.all()
+            serializer = StoreItemsSerializer(store_items, many=True)
+            return Response(serializer.data)
+    
+    def post(self, request, format=None):
         data = request.data
         
         store_item = StoreItems.objects.create(
@@ -30,12 +43,11 @@ class StoreItemsViewSet(viewsets.ModelViewSet):
             is_returnable = data['is_returnable'],
             in_stock = data['in_stock']
         )
-        store_item.save()
         
         serializer = StoreItemsSerializer(store_item)
         return Response(serializer.data)
-
-    def partial_update(self, request, *args, **kwargs):
+    
+    def patch(self, request, pk, format=None):
         store_item = self.get_object()
         data = request.data
         
@@ -58,13 +70,19 @@ class StoreItemsViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class OrderItemViewSet(viewsets.ModelViewSet):
-    queryset = OrderItem.objects.all()
-    serializer_class = OrderItemSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields  = ['status']
+class OrderItemAPI(APIView):
     
-    def create(self, request, *args, **kwargs):
+    def get(self, request, pk=None, format=None):
+        if pk:
+            order_item = OrderItem.objects.get(id=pk)
+            serializer = OrderItemSerializer(order_item)
+            return Response(serializer.data)
+        else:
+            order_items = OrderItem.objects.all()
+            serializer = OrderItemSerializer(order_items, many=True)
+            return Response(serializer.data)
+    
+    def post(self, request, format=None):
         data = request.data
         
         def is_store_item_valid(item_ids: list)-> bool:
@@ -95,5 +113,6 @@ class OrderItemViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_403_FORBIDDEN)
 
 
-class NestedCustomerViewSet(CustomerViewSet):
+class NestedCustomerViewSet(viewsets.ModelViewSet):
+    queryset = Customer.objects.all()
     serializer_class = NestedCustomerSerializer
