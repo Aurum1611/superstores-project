@@ -47,6 +47,28 @@ class StoreItemsAPI(APIView):
         serializer = StoreItemsSerializer(store_item)
         return Response(serializer.data)
     
+    def put(self, request, pk, format=None):
+        store_item = self.get_object()
+        data = request.data
+        
+        store_item.item_name = data.get(
+            'item_name',
+            store_item.item_name
+        )
+        store_item.is_returnable = data.get(
+            'is_returnable',
+            store_item.is_returnable
+        )
+        store_item.in_stock = data.get(
+            'in_stock',
+            store_item.in_stock
+        )
+        
+        store_item.save()
+        
+        serializer = StoreItemsSerializer(store_item)
+        return Response(serializer.data)
+    
     def patch(self, request, pk, format=None):
         store_item = self.get_object()
         data = request.data
